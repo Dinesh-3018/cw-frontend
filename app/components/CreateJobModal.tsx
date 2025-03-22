@@ -107,21 +107,15 @@ const JobOpeningModal: React.FC<ModalProps> = ({ isOpen, setIsOpen }) => {
         application_deadline: new Date(data.deadline).toISOString(),
         id: 0,
       };
-      reset();
-
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_API_URL}/jobs` || "",
         formattedData
       );
-
-      console.log("Job created successfully:", response.data);
       setSubmitSuccess(true);
-
-      setTimeout(() => {
-        reset();
-        setIsOpen(false);
-        setSubmitSuccess(false);
-      }, 2000);
+      reset();
+      setIsOpen(false);
+      setSubmitSuccess(false);
+      reset();
     } catch (error) {
       console.error("Error creating job:", error);
       setSubmitError(
