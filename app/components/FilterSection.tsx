@@ -36,14 +36,13 @@ const FilterSection = ({ setJobs, setLoading }: any) => {
     name: "Preferred Location",
     icon: FiMapPin,
   });
+  console.log("Selected Location:", selectedLocation);
+
   const fetchJobs = async (filters: JobData) => {
     setLoading(true);
     try {
       const response = await axios.get(
-        `${
-          process.env?.NEXT_PUBLIC_API_URL ||
-          "https://cw-backend-25rn.onrender.com"
-        }/jobs`,
+        `${"https://cw-backend-25rn.onrender.com"}/jobs`,
         { params: filters }
       );
       setJobs(response.data?.data);

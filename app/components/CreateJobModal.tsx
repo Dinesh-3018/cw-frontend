@@ -92,6 +92,7 @@ const JobOpeningModal: React.FC<ModalProps> = ({ isOpen, setIsOpen }) => {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitSuccess, setSubmitSuccess] = useState<boolean>(false);
   const [draftSaved, setDraftSaved] = useState<boolean>(false);
+  console.log("hello world");
 
   const onSubmit: SubmitHandler<JobFormValues> = async (data) => {
     try {
@@ -108,10 +109,7 @@ const JobOpeningModal: React.FC<ModalProps> = ({ isOpen, setIsOpen }) => {
         id: 0,
       };
       const response = await axios.post(
-        `${
-          process.env.NEXT_PUBLIC_API_URL ||
-          "https://cw-backend-25rn.onrender.com"
-        }/jobs` || "",
+        `${"https://cw-backend-25rn.onrender.com"}/jobs` || "",
         formattedData
       );
       setSubmitSuccess(true);
