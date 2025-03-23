@@ -92,7 +92,7 @@ const JobOpeningModal: React.FC<ModalProps> = ({ isOpen, setIsOpen }) => {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitSuccess, setSubmitSuccess] = useState<boolean>(false);
   const [draftSaved, setDraftSaved] = useState<boolean>(false);
-  console.log("hello world");
+  // console.log("hello world");
 
   const onSubmit: SubmitHandler<JobFormValues> = async (data) => {
     try {

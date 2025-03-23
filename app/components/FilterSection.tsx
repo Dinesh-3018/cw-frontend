@@ -36,7 +36,7 @@ const FilterSection = ({ setJobs, setLoading }: any) => {
     name: "Preferred Location",
     icon: FiMapPin,
   });
-  console.log("Selected Location:", selectedLocation);
+  // console.log("Selected Location:", selectedLocation);
 
   const fetchJobs = async (filters: JobData) => {
     setLoading(true);
@@ -46,9 +46,9 @@ const FilterSection = ({ setJobs, setLoading }: any) => {
         { params: filters }
       );
       setJobs(response.data?.data);
-      console.log("Jobs fetched:", response.data?.data);
+      // console.log("Jobs fetched:", response.data?.data);
     } catch (error) {
-      console.error("Error fetching jobs:", error);
+      // console.error("Error fetching jobs:", error);
     } finally {
       setLoading(false);
     }
@@ -93,19 +93,20 @@ const FilterSection = ({ setJobs, setLoading }: any) => {
   };
 
   const selectJobType = (jobType: OptionType) => {
-    const JOB_TYPE_MAP: Record<string, string> = {
-      "Full-time": "Full Time",
-      "Part-time": "Part Time",
-      Contract: "Contract",
-      Internship: "Internship",
-    };
+    // const JOB_TYPE_MAP: Record<string, string> = {
+    //   "Full-time": "Full Time",
+    //   "Part-time": "Part Time",
+    //   Contract: "Contract",
+    //   Internship: "Internship",
+    // };
 
-    const formattedJobType = JOB_TYPE_MAP[jobType.name] || jobType.name;
+    // const formattedJobType = JOB_TYPE_MAP[jobType.name] || jobType.name;
+    // console.log("JobType:", jobType, formattedJobType);
 
     if (jobType.id === "any") {
       fetchJobs({});
     } else {
-      fetchJobs({ jobType: formattedJobType });
+      fetchJobs({ jobType: jobType.name });
     }
 
     setSelectedJobType(jobType);
@@ -354,6 +355,7 @@ const FilterSection = ({ setJobs, setLoading }: any) => {
                             variants={itemVariants}
                             onClick={() => {
                               selectJobType(location);
+                              // console.log(location);
                             }}
                             className="flex items-center px-4 py-2 text-lg hover:bg-gray-100 cursor-pointer font-[SatoshiMedium] text-[#686868]"
                           >
