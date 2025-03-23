@@ -40,7 +40,10 @@ const FilterSection = ({ setJobs, setLoading }: any) => {
     setLoading(true);
     try {
       const response = await axios.get(
-        `${process.env?.NEXT_PUBLIC_API_URL}/jobs`,
+        `${
+          process.env?.NEXT_PUBLIC_API_URL ||
+          "https://cw-backend-25rn.onrender.com"
+        }/jobs`,
         { params: filters }
       );
       setJobs(response.data?.data);

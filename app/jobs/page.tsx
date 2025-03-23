@@ -49,7 +49,10 @@ const Page = () => {
     const loadJobs = async () => {
       setLoading(true);
       const { data, error } = await fetchData(
-        `${process.env.NEXT_PUBLIC_API_URL}/jobs`
+        `${
+          process.env.NEXT_PUBLIC_API_URL ||
+          "https://cw-backend-25rn.onrender.com"
+        }/jobs`
       );
 
       if (error) {
@@ -65,7 +68,10 @@ const Page = () => {
   }, [""]);
   const fetchJobs = async () => {
     const { data, error } = await fetchData(
-      `${process.env.NEXT_PUBLIC_API_URL}/jobs`
+      `${
+        process.env.NEXT_PUBLIC_API_URL ||
+        "https://cw-backend-25rn.onrender.com"
+      }/jobs`
     );
 
     if (error) {
@@ -198,26 +204,7 @@ const Page = () => {
           </div>
         </>
       )}
-      {/* {!loading && !error && (
-        <div className=" flex flex-row items-center gap-x-2 ml-10 mt-4">
-          <div className="">
-            <label className="relative inline-block h-6 w-12 cursor-pointer rounded-full bg-gray-300 transition [-webkit-tap-highlight-color:_transparent] has-[:checked]:bg-gray-900">
-              <input
-                className="peer sr-only"
-                id="AcceptConditions"
-                type="checkbox"
-                onChange={(e) => ShowDraftHandler(e.target.checked)}
-              />
-              <span className="absolute inset-y-0 start-0 m-1 size-4 rounded-full bg-gray-300 ring-[6px] ring-inset ring-white transition-all peer-checked:start-8 peer-checked:w-2 peer-checked:bg-white peer-checked:ring-transparent" />
-            </label>
-          </div>
-          <div>
-            <h1 className="text-[#686868] font-[SatoshiMedium] text-lg">
-              Show Draft
-            </h1>
-          </div>
-        </div>
-      )} */}
+
       {!loading && !error && jobs.length > 0 && (
         <div className="grid grid-cols-1 mb-20 sm:grid-cols-1 md:grid-cols-2 gap-6 lg:grid-cols-4 ml-10 mr-10  sm:mt-72 lg:mt-10 md:mt-72 xs:mt-72">
           {jobs.map((job) => (

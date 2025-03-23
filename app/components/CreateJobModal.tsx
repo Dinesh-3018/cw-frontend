@@ -108,7 +108,10 @@ const JobOpeningModal: React.FC<ModalProps> = ({ isOpen, setIsOpen }) => {
         id: 0,
       };
       const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/jobs` || "",
+        `${
+          process.env.NEXT_PUBLIC_API_URL ||
+          "https://cw-backend-25rn.onrender.com"
+        }/jobs` || "",
         formattedData
       );
       setSubmitSuccess(true);
