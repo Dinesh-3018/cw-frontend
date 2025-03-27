@@ -1,7 +1,5 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable prefer-const */
-import React, { useState, useRef, useEffect } from "react";
-import { motion, useMotionValue } from "framer-motion";
+import React, { useState, useRef } from "react";
+import { motion, PanInfo } from "framer-motion";
 
 interface SalaryRangeSliderProps {
   minValue: number;
@@ -12,106 +10,125 @@ interface SalaryRangeSliderProps {
 }
 
 const SalaryRangeSlider: React.FC<SalaryRangeSliderProps> = ({
-  minValue,
-  maxValue,
+  minValue = 30000,
+  maxValue = 200000,
   step = 1000,
-  initialValues = [50000, 80000],
+  initialValues = [50000, 155000],
   onChange,
 }) => {
   const [values, setValues] = useState<[number, number]>(initialValues);
   const sliderRef = useRef<HTMLDivElement>(null);
-  const activeThumb = useRef<"min" | "max" | null>(null);
 
-  const getPositionFromValue = (value: number): number =>
+  const calculatePercentage = (value: number) =>
     ((value - minValue) / (maxValue - minValue)) * 100;
 
-  const minPosition = useMotionValue(getPositionFromValue(values[0]));
-  const maxPosition = useMotionValue(getPositionFromValue(values[1]));
-
-  const getValueFromPosition = (position: number): number => {
-    let rawValue = minValue + ((maxValue - minValue) * position) / 100;
-    return Math.min(
-      Math.max(Math.round(rawValue / step) * step, minValue),
-      maxValue
-    );
+  const calculateValue = (percentage: number) => {
+    const value = minValue + (maxValue - minValue) * (percentage / 100);
+    return Math.round(value / step) * step;
   };
 
-  const handleDrag = (deltaX: number, thumbType: "min" | "max") => {
+  const handleMinThumbDrag = (
+    _: MouseEvent | TouchEvent | PointerEvent,
+    info: PanInfo
+  ) => {
     if (!sliderRef.current) return;
 
     const sliderWidth = sliderRef.current.getBoundingClientRect().width;
-    let newPosition = (deltaX / sliderWidth) * 100;
+    const currentPercentage = calculatePercentage(values[0]);
+    const deltaPercentage = (info.delta.x / sliderWidth) * 100;
 
-    if (thumbType === "min") {
-      newPosition = Math.max(
-        0,
-        Math.min(newPosition + minPosition.get(), maxPosition.get() - 5)
-      );
-      minPosition.set(newPosition);
-    } else {
-      newPosition = Math.max(
-        minPosition.get() + 5,
-        Math.min(100, newPosition + maxPosition.get())
-      );
-      maxPosition.set(newPosition);
-    }
-
-    const newValue = getValueFromPosition(
-      thumbType === "min" ? minPosition.get() : maxPosition.get()
-    );
-    setValues(
-      thumbType === "min" ? [newValue, values[1]] : [values[0], newValue]
+    const newPercentage = Math.max(
+      0,
+      Math.min(
+        currentPercentage + deltaPercentage,
+        calculatePercentage(values[1]) - 2
+      )
     );
 
-    onChange?.(
-      thumbType === "min" ? [newValue, values[1]] : [values[0], newValue]
-    );
+    const newValue = calculateValue(newPercentage);
+    const newValues: [number, number] = [newValue, values[1]];
+
+    setValues(newValues);
+    onChange?.(newValues);
   };
 
-  useEffect(() => {
-    minPosition.set(getPositionFromValue(values[0]));
-    maxPosition.set(getPositionFromValue(values[1]));
-  }, [values, minValue, maxValue]);
+  const handleMaxThumbDrag = (
+    _: MouseEvent | TouchEvent | PointerEvent,
+    info: PanInfo
+  ) => {
+    if (!sliderRef.current) return;
+
+    const sliderWidth = sliderRef.current.getBoundingClientRect().width;
+    const currentPercentage = calculatePercentage(values[1]);
+    const deltaPercentage = (info.delta.x / sliderWidth) * 100;
+
+    const newPercentage = Math.max(
+      calculatePercentage(values[0]) + 2,
+      Math.min(currentPercentage + deltaPercentage, 100)
+    );
+
+    const newValue = calculateValue(newPercentage);
+    const newValues: [number, number] = [values[0], newValue];
+
+    setValues(newValues);
+    onChange?.(newValues);
+  };
+
+  const minThumbPosition = calculatePercentage(values[0]);
+  const maxThumbPosition = calculatePercentage(values[1]);
 
   return (
-    <div>
-      <div className="flex justify-between mb-2 w-72 items-center">
-        <span className="text-[16px] font-[SatoshiMedium] text-[#222]">
-          Salary Per Month
-        </span>
-        <span className="text-md font-[SatoshiMedium] text-[#222]">
-          ₹{values[0] / 1000}k - ₹{values[1] / 1000}k
-        </span>
-      </div>
+    <div className="w-full px-4 py-6">
+      <div className="relative w-full">
+        {/* Background Track */}
+        <div
+          ref={sliderRef}
+          className="w-full h-2 bg-gray-200 rounded-full absolute top-1/2 transform -translate-y-1/2"
+        >
+          {/* Filled Track */}
+          <div
+            className="absolute h-full bg-blue-500 rounded-full"
+            style={{
+              left: `${minThumbPosition}%`,
+              right: `${100 - maxThumbPosition}%`,
+            }}
+          />
+        </div>
 
-      <div
-        ref={sliderRef}
-        className="relative h-0.5 w-full bg-gray-300 rounded-md mt-4"
-      >
+        {/* Min Thumb */}
         <motion.div
-          className="absolute h-full bg-[#222222] ml-1 mr-1.5 rounded-md"
+          drag="x"
+          dragConstraints={sliderRef}
+          dragElastic={0}
+          onDrag={handleMinThumbDrag}
           style={{
-            left: `${minPosition.get()}%`,
-            right: `${100 - maxPosition.get()}%`,
+            left: `${minThumbPosition}%`,
+            translateX: "-50%",
+            translateY: "-50%",
           }}
+          className="absolute top-1/2 w-6 h-6 bg-white border-2 border-blue-500 rounded-full shadow-md hover:shadow-lg transition-shadow cursor-pointer"
         />
 
-        {(["min", "max"] as const).map((thumbType) => (
-          <motion.div
-            key={thumbType}
-            className="absolute w-4 h-4 border-[3px] border-[#000000] rounded-full -top-[7px] cursor-pointer"
-            style={{
-              left: `calc(${
-                thumbType === "min" ? minPosition.get() : maxPosition.get()
-              }% - 12px)`,
-            }}
-            drag="x"
-            dragConstraints={{ left: 0, right: 0 }}
-            dragElastic={0}
-            dragMomentum={false}
-            onDrag={(_, info) => handleDrag(info.delta.x, thumbType)}
-          />
-        ))}
+        {/* Max Thumb */}
+        <motion.div
+          drag="x"
+          dragConstraints={sliderRef}
+          dragElastic={0}
+          onDrag={handleMaxThumbDrag}
+          style={{
+            left: `${maxThumbPosition}%`,
+            translateX: "-50%",
+            translateY: "-50%",
+          }}
+          className="absolute top-1/2 w-6 h-6 bg-white border-2 border-blue-500 rounded-full shadow-md hover:shadow-lg transition-shadow cursor-pointer"
+        />
+      </div>
+
+      {/* Value Display */}
+      <div className="flex justify-between mt-6 text-sm text-gray-600">
+        <span>₹{Math.round(values[0] / 1000)}k</span>
+        <span className="font-semibold">Salary Range</span>
+        <span>₹{Math.round(values[1] / 1000)}k</span>
       </div>
     </div>
   );

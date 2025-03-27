@@ -9,6 +9,7 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import SampleCompanyLogo2 from "../assets/SampleIcon2.svg";
 import SampleCompanyLogo3 from "../assets/SampleIcon3.svg";
 import SampleCompanyLogo from "../assets/SampleCompanyLogo.svg";
+
 enum JobType {
   FULL_TIME = "Full-time",
   PART_TIME = "Part-time",
@@ -89,20 +90,20 @@ const Card = ({ job }: { job: Job }) => {
   dayjs.extend(relativeTime);
 
   return (
-    <div>
-      <div className="w-[350px] h-[370px] border border-white/10 shadow-lg rounded-2xl flex flex-col">
-        {/* Top section with logo and time */}
+    <div className="w-full max-w-sm mx-auto">
+      <div className="w-full h-full border border-white/10 shadow-lg rounded-2xl flex flex-col">
         <div className="m-3 mt-4">
           <div className="flex flex-row justify-between items-start">
             <div className="w-[83px] h-[82px] p-2 border rounded-xl border-white shadow-sm">
               <Image
                 src={getRandomLogo(job?.company_name)}
                 alt="Company Logo"
+                className="w-full h-full object-contain"
               />
             </div>
             <div>
               <div className="bg-[#B0D9FF] rounded-xl text-center px-3 py-1.5">
-                <h1 className="text-[#000000] font-[SatoshiMedium] capitalize">
+                <h1 className="text-[#000000] font-[SatoshiMedium] text-sm sm:text-base capitalize">
                   {job?.created_at ? dayjs(job.created_at).fromNow() : "Recent"}
                 </h1>
               </div>
@@ -110,30 +111,41 @@ const Card = ({ job }: { job: Job }) => {
           </div>
         </div>
 
-        {/* Job title and details */}
         <div className="ml-4 mt-1">
           <div>
-            <h1 className="text-[#000000] font-[SatoshiSemiBold] text-xl">
+            <h1 className="text-[#000000] font-[SatoshiSemiBold] text-lg sm:text-xl">
               {job?.job_title || "Full Stack Developer"}
             </h1>
           </div>
           <div className="mt-3">
-            <div className="flex flex-row items-center justify-between mr-5">
-              <div className="flex flex-row items-center gap-x-2">
-                <Image src={ExprienceIcon} alt="Experience Icon" />
-                <h1 className="text-[#5A5A5A] font-[SatoshiMedium]">
+            <div className="flex flex-row items-center justify-between mr-5 space-x-2">
+              <div className="flex flex-row items-center gap-x-1 sm:gap-x-2">
+                <Image
+                  src={ExprienceIcon}
+                  alt="Experience Icon"
+                  className="w-4 h-4 sm:w-5 sm:h-5"
+                />
+                <h1 className="text-[#5A5A5A] font-[SatoshiMedium] text-xs sm:text-sm">
                   {getExperienceYears(job?.job_type)}
                 </h1>
               </div>
-              <div className="flex flex-row items-center gap-x-2">
-                <Image src={OfcIcon} alt="Office Icon" />
-                <h1 className="text-[#5A5A5A] font-[SatoshiMedium]">
+              <div className="flex flex-row items-center gap-x-1 sm:gap-x-2">
+                <Image
+                  src={OfcIcon}
+                  alt="Office Icon"
+                  className="w-4 h-4 sm:w-5 sm:h-5"
+                />
+                <h1 className="text-[#5A5A5A] font-[SatoshiMedium] text-xs sm:text-sm">
                   {job?.job_type || "Onsite"}
                 </h1>
               </div>
-              <div className="flex flex-row items-center gap-x-2">
-                <Image src={StackIcon} alt="Salary Icon" />
-                <h1 className="text-[#5A5A5A] font-[SatoshiMedium]">
+              <div className="flex flex-row items-center gap-x-1 sm:gap-x-2">
+                <Image
+                  src={StackIcon}
+                  alt="Salary Icon"
+                  className="w-4 h-4 sm:w-5 sm:h-5"
+                />
+                <h1 className="text-[#5A5A5A] font-[SatoshiMedium] text-xs sm:text-sm">
                   {parseSalaryLPA(job?.salary_range || "0")}
                 </h1>
               </div>
@@ -141,15 +153,16 @@ const Card = ({ job }: { job: Job }) => {
           </div>
         </div>
 
-        {/* Description section */}
         <div className="ml-2 mr-3 mt-4 flex-grow overflow-hidden">
           <div className="text-[#555555] font-[SatoshiMedium]">
             <ul className="list-disc pl-5">
               {point1 && (
-                <li className="break-words whitespace-pre-line">{point1}</li>
+                <li className="break-words whitespace-pre-line text-xs sm:text-sm">
+                  {point1}
+                </li>
               )}
               {point2 && (
-                <li className="break-words whitespace-pre-line mt-2">
+                <li className="break-words whitespace-pre-line mt-2 text-xs sm:text-sm">
                   {point2}
                 </li>
               )}
@@ -157,8 +170,8 @@ const Card = ({ job }: { job: Job }) => {
           </div>
         </div>
 
-        <div className="px-4 mt-auto mb-4">
-          <button className="bg-[#00AAFF] w-full cursor-pointer border border-[#00AAFF] rounded-xl text-white text-center px-6 py-3 font-[SatoshiSemiBold] text-md">
+        <div className="px-4 mt-6 mb-4">
+          <button className="bg-[#00AAFF] w-full cursor-pointer border border-[#00AAFF] rounded-xl text-white text-center px-6 py-2 sm:py-3 font-[SatoshiSemiBold] text-sm sm:text-md">
             Apply Now
           </button>
         </div>
