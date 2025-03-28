@@ -16,9 +16,8 @@ import DropDownIcon from "../assets/Vector.svg";
 import { FiMapPin, FiBriefcase } from "react-icons/fi";
 import { motion } from "framer-motion";
 import { IconType } from "react-icons";
-import SalaryRangeSlider from "./SalaryRangeSlider";
 import axios from "axios";
-
+import PriceRangeSlider from "./SalaryRangeSlider";
 interface OptionType {
   id: string;
   name: string;
@@ -145,7 +144,7 @@ const FilterSection: React.FC<FilterSectionProps> = ({
               setLoading(false);
             });
 
-          return mergedFilters; 
+          return mergedFilters;
         });
       } catch (error) {
         console.error("Unexpected error:", error);
@@ -154,7 +153,6 @@ const FilterSection: React.FC<FilterSectionProps> = ({
     },
     [setJobs, setLoading, setFilters]
   );
-
 
   const toggleLocationDropdown = useCallback(() => {
     setIsLocationOpen((prev) => !prev);
@@ -165,7 +163,6 @@ const FilterSection: React.FC<FilterSectionProps> = ({
     setIsJobTypeOpen((prev) => !prev);
     if (isLocationOpen) setIsLocationOpen(false);
   }, [isLocationOpen]);
-
 
   const selectLocation = useCallback(
     (location: OptionType) => {
@@ -178,7 +175,6 @@ const FilterSection: React.FC<FilterSectionProps> = ({
     [fetchJobs]
   );
 
-
   const selectJobType = useCallback(
     (jobType: OptionType) => {
       const filters = jobType.id === "any" ? {} : { jobType: jobType.name };
@@ -189,13 +185,11 @@ const FilterSection: React.FC<FilterSectionProps> = ({
     [fetchJobs]
   );
 
-
   const handleSearch = useCallback(() => {
     if (searchQuery.trim()) {
       fetchJobs({ title: searchQuery });
     }
   }, [searchQuery, fetchJobs]);
-
 
   const handleSalaryChange = useCallback(
     (values: [number, number]) => {
@@ -204,7 +198,6 @@ const FilterSection: React.FC<FilterSectionProps> = ({
     },
     [fetchJobs]
   );
-
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -232,7 +225,6 @@ const FilterSection: React.FC<FilterSectionProps> = ({
     <div className="shadow-sm">
       <div className="bg-white h-[80px] xl:flex flex-row justify-center max-w-screen-xl mx-auto w-full border-white/10">
         <div className="xl:flex xl:flex-row items-center lg:flex-col gap-x-4 w-full">
-
           <div className="relative">
             <input
               type="text"
@@ -249,7 +241,6 @@ const FilterSection: React.FC<FilterSectionProps> = ({
             />
           </div>
 
-         
           <div ref={locationDropdownRef}>
             <div className="relative xl:w-80 sm:w-full">
               <button
@@ -356,15 +347,8 @@ const FilterSection: React.FC<FilterSectionProps> = ({
             </div>
           </div>
 
-
           <div className="xl:ml-10 m-10 xl:m-0">
-            <SalaryRangeSlider
-              minValue={10000}
-              maxValue={200000}
-              step={5000}
-              initialValues={[50000, 80000]}
-              onChange={handleSalaryChange}
-            />
+            <PriceRangeSlider fetchJobs={fetchJobs} />
           </div>
         </div>
       </div>
